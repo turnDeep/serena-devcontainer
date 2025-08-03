@@ -26,10 +26,12 @@ BRAVE_API_KEY=your-brave-api-key-here
 
 ### 3. Claude Code CLIのインストール
 
-コンテナ内のターミナルで実行：
+**Dev Container環境では、この手順はコンテナ起動時に自動的に実行されるため不要です。**
+
+もしDev Containerを使用しない環境の場合は、以下のコマンドで手動でインストールしてください。
 
 ```bash
-# Claude Code公式インストーラーを使用
+# Claude Code公式インストーラー
 # 詳細: https://github.com/anthropics/claude-code
 npm install -g @anthropic/claude-code
 ```

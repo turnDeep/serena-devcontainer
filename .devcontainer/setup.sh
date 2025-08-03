@@ -11,16 +11,20 @@ echo "📦 Installing uv package manager..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source $HOME/.cargo/env
 
-# 2. gitの設定
+# 2. Claude Code CLIのインストール
+echo "📦 Installing Claude Code CLI via npm..."
+npm install -g @anthropic/claude-code
+
+# 3. gitの設定
 echo "🔧 Configuring git..."
 git config --global core.autocrlf input
 git config --global init.defaultBranch main
 
-# 3. Serena設定ディレクトリの準備
+# 4. Serena設定ディレクトリの準備
 echo "📁 Preparing Serena configuration..."
 mkdir -p ~/.serena
 
-# 4. 基本的なSerena設定ファイルの作成
+# 5. 基本的なSerena設定ファイルの作成
 if [ ! -f ~/.serena/serena_config.yml ]; then
   cat > ~/.serena/serena_config.yml << 'EOF'
 # Serena Configuration
@@ -45,11 +49,11 @@ EOF
   echo "✅ Created Serena config"
 fi
 
-# 5. Claude設定ディレクトリの準備
+# 6. Claude設定ディレクトリの準備
 echo "📁 Preparing Claude configuration..."
 mkdir -p ~/.claude/config
 
-# 6. MCPサーバー設定ファイルの作成
+# 7. MCPサーバー設定ファイルの作成
 cat > ~/.claude/config/mcp_setup.sh << 'SCRIPT'
 #!/bin/bash
 # MCPサーバーを設定するスクリプト
@@ -77,7 +81,7 @@ SCRIPT
 
 chmod +x ~/.claude/config/mcp_setup.sh
 
-# 7. 便利なエイリアスの設定
+# 8. 便利なエイリアスの設定
 echo "🔧 Setting up aliases..."
 cat >> ~/.bashrc << 'ALIASES'
 
@@ -93,7 +97,7 @@ alias serena-dashboard='echo "Serena Dashboard: http://localhost:24282/dashboard
 alias project-index='uvx --from git+https://github.com/oraios/serena index-project'
 ALIASES
 
-# 8. 完了メッセージ
+# 9. 完了メッセージ
 echo ""
 echo "================================================"
 echo "✅ Setup completed!"
@@ -101,20 +105,17 @@ echo "================================================"
 echo ""
 echo "📋 Next steps:"
 echo ""
-echo "1. Install Claude Code CLI (if not installed):"
-echo "   Visit: https://github.com/anthropics/claude-code"
-echo ""
-echo "2. Set up Brave Search API key (optional):"
+echo "1. Set up Brave Search API key (optional):"
 echo "   - Get API key from: https://brave.com/search/api/"
 echo "   - Set in .env file or export BRAVE_API_KEY='your-key'"
 echo ""
-echo "3. Configure MCP servers:"
+echo "2. Configure MCP servers:"
 echo "   Run: cc-setup"
 echo ""
-echo "4. Start Claude Code:"
+echo "3. Start Claude Code:"
 echo "   Run: claude"
 echo ""
-echo "5. In Claude, load Serena instructions:"
+echo "4. In Claude, load Serena instructions:"
 echo "   Type: /mcp__serena__initial_instructions"
 echo ""
 echo "📦 Available commands:"
