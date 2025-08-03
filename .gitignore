@@ -1,40 +1,31 @@
-# Serena MCP関連のファイル
+# 環境変数（重要: APIキーを含む）
+.env
+.env.local
 
-# Serenaプロジェクト設定
+# Serena MCP
 .serena/project.yml
 .serena/memories/
 .serena/*.log
-
-# Serenaインデックス
 .serena/index/
 .serena/cache/
 
-# Claude Code設定（ローカル）
+# Claude Code
 .claude/
 
-# 一時ファイル
-*.tmp
-*.bak
-
-# ログファイル
-serena.log
-claude.log
-
-# Python関連
-__pycache__/
-*.py[cod]
-*$py.class
-.Python
-env/
-venv/
-.venv/
-
-# IDE
-.vscode/
-*.swp
-*.swo
-*~
+# ログ
+*.log
 
 # OS
 .DS_Store
 Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/
+
+# IDE
+.vscode/settings.json
+.idea/
