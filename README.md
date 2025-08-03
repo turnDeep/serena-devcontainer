@@ -24,19 +24,7 @@ BRAVE_API_KEY=your-brave-api-key-here
 2. `Cmd/Ctrl + Shift + P`で「Dev Containers: Reopen in Container」を選択
 3. コンテナのビルドを待つ（初回は数分かかります）
 
-### 3. Claude Code CLIのインストール
-
-**Dev Container環境では、この手順はコンテナ起動時に自動的に実行されるため不要です。**
-
-もしDev Containerを使用しない環境の場合は、以下のコマンドで手動でインストールしてください。
-
-```bash
-# Claude Code公式インストーラー
-# 詳細: https://github.com/anthropics/claude-code
-npm install -g @anthropic/claude-code
-```
-
-### 4. MCPサーバーの設定
+### 3. MCPサーバーの設定
 
 ```bash
 # 自動設定スクリプトを実行
@@ -50,7 +38,7 @@ claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena 
 claude mcp add brave-search -- npx -y @modelcontextprotocol/server-brave-search
 ```
 
-### 5. Claude Codeの起動
+### 4. Claude Codeの起動
 
 ```bash
 # Claude Codeを起動
