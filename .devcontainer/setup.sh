@@ -79,22 +79,47 @@ SCRIPT
 
 chmod +x ~/.claude/config/mcp_setup.sh
 
-# 8. 便利なエイリアスの設定（システム全体で有効化）
-echo "🔧 Setting up system-wide aliases..."
-sudo bash -c "cat > /etc/profile.d/claude_aliases.sh" << 'ALIASES'
+# 8. コマンドラッパーの作成（システム全体で有効化）
+echo "🔧 Creating system-wide command wrappers..."
+
+# cc
+sudo bash -c "cat > /usr/local/bin/cc" << 'EOF'
 #!/bin/bash
+set -e
+exec anthropic-ai-sdk "$@"
+EOF
 
-# Claude Code aliases
-alias cc='anthropic-ai-sdk'
-alias cc-setup='~/.claude/config/mcp_setup.sh'
-alias cc-status='anthropic-ai-sdk mcp list'
+# cc-setup
+# スクリプトのフルパスを指定
+sudo bash -c "cat > /usr/local/bin/cc-setup" << 'EOF'
+#!/bin/bash
+set -e
+exec /home/vscode/.claude/config/mcp_setup.sh "$@"
+EOF
 
-# Serena dashboard
-alias serena-dashboard='echo "Serena Dashboard: http://localhost:24282/dashboard/index.html"'
+# cc-status
+sudo bash -c "cat > /usr/local/bin/cc-status" << 'EOF'
+#!/bin/bash
+set -e
+exec anthropic-ai-sdk mcp list "$@"
+EOF
 
-# Project helpers
-alias project-index='uvx --from git+https://github.com/oraios/serena index-project'
-ALIASES
+# serena-dashboard
+sudo bash -c "cat > /usr/local/bin/serena-dashboard" << 'EOF'
+#!/bin/bash
+echo "Serena Dashboard: http://localhost:24282/dashboard/index.html"
+EOF
+
+# project-index
+# uvxは/home/vscode/.local/binにインストールされるためフルパスを指定
+sudo bash -c "cat > /usr/local/bin/project-index" << 'EOF'
+#!/bin/bash
+set -e
+exec /home/vscode/.local/bin/uvx --from git+https://github.com/oraios/serena index-project "$@"
+EOF
+
+# 作成したスクリプトに実行権限を付与
+sudo chmod +x /usr/local/bin/cc /usr/local/bin/cc-setup /usr/local/bin/cc-status /usr/local/bin/serena-dashboard /usr/local/bin/project-index
 
 # 9. 完了メッセージ
 echo ""
