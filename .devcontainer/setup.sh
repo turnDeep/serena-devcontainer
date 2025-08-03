@@ -11,8 +11,9 @@ echo "📦 Installing uv package manager..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. Claude Code CLIのインストール
-echo "📦 Installing Claude Code CLI via npm (version 0.4.1)..."
-npm install -g @anthropic-ai/sdk@0.4.1
+echo "📦 Installing Claude Code CLI via npm..."
+npm install -g @anthropic-ai/claude-code
+
 # 3. gitの設定
 echo "🔧 Configuring git..."
 git config --global core.autocrlf input
@@ -20,11 +21,11 @@ git config --global init.defaultBranch main
 
 # 4. Serena設定ディレクトリの準備
 echo "📁 Preparing Serena configuration..."
-mkdir -p ~/.serena
+mkdir -p "$HOME/.serena"
 
 # 5. 基本的なSerena設定ファイルの作成
-if [ ! -f ~/.serena/serena_config.yml ]; then
-  cat > ~/.serena/serena_config.yml << 'EOF'
+if [ ! -f "$HOME/.serena/serena_config.yml" ]; then
+  cat > "$HOME/.serena/serena_config.yml" << 'EOF'
 # Serena Configuration
 dashboard:
   enabled: true
@@ -49,10 +50,10 @@ fi
 
 # 6. Claude設定ディレクトリの準備
 echo "📁 Preparing Claude configuration..."
-mkdir -p ~/.claude/config
+mkdir -p "$HOME/.claude/config"
 
 # 7. MCPサーバー設定ファイルの作成
-cat > ~/.claude/config/mcp_setup.sh << 'SCRIPT'
+cat > "$HOME/.claude/config/mcp_setup.sh" << 'SCRIPT'
 #!/bin/bash
 # MCPサーバーを設定するスクリプト
 
@@ -60,12 +61,12 @@ echo "🚀 Setting up MCP servers..."
 
 # Serena MCPを追加
 echo "Adding Serena MCP..."
-anthropic-ai-sdk mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)
+claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project "$(pwd)"
 
 # Brave Search MCPを追加（APIキーが設定されている場合のみ）
 if [ ! -z "$BRAVE_API_KEY" ]; then
   echo "Adding Brave Search MCP..."
-  anthropic-ai-sdk mcp add brave-search -- npx -y @modelcontextprotocol/server-brave-search
+  claude mcp add brave-search -- npx -y @modelcontextprotocol/server-brave-search
   echo "✅ Brave Search MCP added"
 else
   echo "⚠️  BRAVE_API_KEY not set. Skipping Brave Search MCP."
@@ -74,10 +75,10 @@ fi
 
 echo "✅ MCP servers setup complete!"
 echo ""
-echo "Run 'anthropic-ai-sdk' to start Claude Code"
+echo "Run 'claude' to start Claude Code"
 SCRIPT
 
-chmod +x ~/.claude/config/mcp_setup.sh
+chmod +x "$HOME/.claude/config/mcp_setup.sh"
 
 # 8. コマンドラッパーの作成（システム全体で有効化）
 echo "🔧 Creating system-wide command wrappers..."
@@ -86,7 +87,7 @@ echo "🔧 Creating system-wide command wrappers..."
 sudo bash -c "cat > /usr/local/bin/cc" << 'EOF'
 #!/bin/bash
 set -e
-exec anthropic-ai-sdk "$@"
+exec claude "$@"
 EOF
 
 # cc-setup
@@ -94,14 +95,14 @@ EOF
 sudo bash -c "cat > /usr/local/bin/cc-setup" << 'EOF'
 #!/bin/bash
 set -e
-exec /home/vscode/.claude/config/mcp_setup.sh "$@"
+exec $HOME/.claude/config/mcp_setup.sh "$@"
 EOF
 
 # cc-status
 sudo bash -c "cat > /usr/local/bin/cc-status" << 'EOF'
 #!/bin/bash
 set -e
-exec anthropic-ai-sdk mcp list "$@"
+exec claude mcp list "$@"
 EOF
 
 # serena-dashboard
@@ -111,11 +112,11 @@ echo "Serena Dashboard: http://localhost:24282/dashboard/index.html"
 EOF
 
 # project-index
-# uvxは/home/vscode/.local/binにインストールされるためフルパスを指定
+# uvxは$HOME/.local/binにインストールされるためフルパスを指定
 sudo bash -c "cat > /usr/local/bin/project-index" << 'EOF'
 #!/bin/bash
 set -e
-exec /home/vscode/.local/bin/uvx --from git+https://github.com/oraios/serena index-project "$@"
+exec $HOME/.local/bin/uvx --from git+https://github.com/oraios/serena index-project "$@"
 EOF
 
 # 作成したスクリプトに実行権限を付与
@@ -143,7 +144,7 @@ echo "4. In Claude, load Serena instructions:"
 echo "   Type: /mcp__serena__initial_instructions"
 echo ""
 echo "📦 Available commands:"
-echo "   cc          - Start Claude Code (alias for anthropic-ai-sdk)"
+echo "   cc          - Start Claude Code (alias for claude)"
 echo "   cc-setup    - Configure MCP servers"
 echo "   cc-status   - Check MCP server status"
 echo ""
