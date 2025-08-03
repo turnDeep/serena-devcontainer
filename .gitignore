@@ -1,0 +1,40 @@
+# Serena MCP関連のファイル
+
+# Serenaプロジェクト設定
+.serena/project.yml
+.serena/memories/
+.serena/*.log
+
+# Serenaインデックス
+.serena/index/
+.serena/cache/
+
+# Claude Code設定（ローカル）
+.claude/
+
+# 一時ファイル
+*.tmp
+*.bak
+
+# ログファイル
+serena.log
+claude.log
+
+# Python関連
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+.venv/
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
