@@ -1,5 +1,5 @@
 {
-  "name": "Claude Code + Serena MCP Dev Environment",
+  "name": "Claude Code + Serena MCP + Brave Search",
   "image": "mcr.microsoft.com/devcontainers/python:3.11",
   
   // VSCode拡張機能
@@ -10,20 +10,23 @@
         "ms-python.vscode-pylance"
       ],
       "settings": {
-        "python.defaultInterpreter": "/usr/local/bin/python"
+        "python.defaultInterpreter": "/usr/local/bin/python",
+        "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
 
   // 必要なツールのインストール
-  "postCreateCommand": "bash -c '.devcontainer/setup.sh'",
+  "postCreateCommand": "bash -c 'chmod +x .devcontainer/setup.sh && .devcontainer/setup.sh'",
   
-  // コンテナ起動時の設定
-  "postStartCommand": "echo 'Dev container ready. Run: claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)'",
+  // コンテナ起動時のメッセージ
+  "postStartCommand": "echo '✅ Dev container ready! See README.md for setup instructions.'",
   
-  // 環境変数
+  // 環境変数（Brave Search APIキーをここに設定）
   "remoteEnv": {
-    "SHELL": "/bin/bash"
+    "SHELL": "/bin/bash",
+    // ⚠️ 以下のAPIキーを実際のものに置き換えてください
+    "BRAVE_API_KEY": "${localEnv:BRAVE_API_KEY}"
   },
 
   // ポートフォワーディング（Serenaダッシュボード用）
@@ -32,6 +35,13 @@
     "24282": {
       "label": "Serena Dashboard",
       "onAutoForward": "notify"
+    }
+  },
+
+  // Node.jsを追加（MCPサーバー用）
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
     }
   },
 
