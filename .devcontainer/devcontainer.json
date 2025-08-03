@@ -17,7 +17,7 @@
   },
 
   // 必要なツールのインストール
-  "postCreateCommand": "bash -c 'chmod +x .devcontainer/setup.sh && .devcontainer/setup.sh'",
+  "postCreateCommand": "bash .devcontainer/setup.sh",
   
   // コンテナ起動時のメッセージ
   "postStartCommand": "echo '✅ Dev container ready! See README.md for setup instructions.'",
