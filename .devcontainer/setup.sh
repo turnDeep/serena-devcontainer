@@ -13,9 +13,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # 2. Claude Code CLIのインストール
 echo "📦 Installing Claude Code CLI via npm..."
 npm install -g @anthropic-ai/sdk
-echo "🔎 Reading package.json to find executable name..."
-cat $(npm root -g)/@anthropic-ai/sdk/package.json
-
 # 3. gitの設定
 echo "🔧 Configuring git..."
 git config --global core.autocrlf input
@@ -63,12 +60,12 @@ echo "🚀 Setting up MCP servers..."
 
 # Serena MCPを追加
 echo "Adding Serena MCP..."
-claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)
+anthropic-ai-sdk mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)
 
 # Brave Search MCPを追加（APIキーが設定されている場合のみ）
 if [ ! -z "$BRAVE_API_KEY" ]; then
   echo "Adding Brave Search MCP..."
-  claude mcp add brave-search -- npx -y @modelcontextprotocol/server-brave-search
+  anthropic-ai-sdk mcp add brave-search -- npx -y @modelcontextprotocol/server-brave-search
   echo "✅ Brave Search MCP added"
 else
   echo "⚠️  BRAVE_API_KEY not set. Skipping Brave Search MCP."
@@ -77,7 +74,7 @@ fi
 
 echo "✅ MCP servers setup complete!"
 echo ""
-echo "Run 'claude' to start Claude Code"
+echo "Run 'anthropic-ai-sdk' to start Claude Code"
 SCRIPT
 
 chmod +x ~/.claude/config/mcp_setup.sh
@@ -88,9 +85,9 @@ sudo bash -c "cat > /etc/profile.d/claude_aliases.sh" << 'ALIASES'
 #!/bin/bash
 
 # Claude Code aliases
-alias cc='claude'
+alias cc='anthropic-ai-sdk'
 alias cc-setup='~/.claude/config/mcp_setup.sh'
-alias cc-status='claude mcp list'
+alias cc-status='anthropic-ai-sdk mcp list'
 
 # Serena dashboard
 alias serena-dashboard='echo "Serena Dashboard: http://localhost:24282/dashboard/index.html"'
@@ -115,13 +112,13 @@ echo "2. Configure MCP servers:"
 echo "   Run: cc-setup"
 echo ""
 echo "3. Start Claude Code:"
-echo "   Run: claude"
+echo "   Run: cc"
 echo ""
 echo "4. In Claude, load Serena instructions:"
 echo "   Type: /mcp__serena__initial_instructions"
 echo ""
 echo "📦 Available commands:"
-echo "   cc          - Start Claude Code"
+echo "   cc          - Start Claude Code (alias for anthropic-ai-sdk)"
 echo "   cc-setup    - Configure MCP servers"
 echo "   cc-status   - Check MCP server status"
 echo ""
