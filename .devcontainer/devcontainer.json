@@ -1,0 +1,40 @@
+{
+  "name": "Claude Code + Serena MCP Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  
+  // VSCode拡張機能
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "python.defaultInterpreter": "/usr/local/bin/python"
+      }
+    }
+  },
+
+  // 必要なツールのインストール
+  "postCreateCommand": "bash -c '.devcontainer/setup.sh'",
+  
+  // コンテナ起動時の設定
+  "postStartCommand": "echo 'Dev container ready. Run: claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)'",
+  
+  // 環境変数
+  "remoteEnv": {
+    "SHELL": "/bin/bash"
+  },
+
+  // ポートフォワーディング（Serenaダッシュボード用）
+  "forwardPorts": [24282],
+  "portsAttributes": {
+    "24282": {
+      "label": "Serena Dashboard",
+      "onAutoForward": "notify"
+    }
+  },
+
+  // コンテナのユーザー設定
+  "remoteUser": "vscode"
+}
