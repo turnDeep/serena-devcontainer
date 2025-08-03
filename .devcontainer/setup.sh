@@ -11,8 +11,8 @@ echo "📦 Installing uv package manager..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 2. Claude Code CLIのインストール
-echo "📦 Installing Claude Code CLI via npm..."
-npm install -g @anthropic-ai/sdk
+echo "📦 Installing Claude Code CLI via npm (version 0.4.1)..."
+npm install -g @anthropic-ai/sdk@0.4.1
 # 3. gitの設定
 echo "🔧 Configuring git..."
 git config --global core.autocrlf input
