@@ -81,9 +81,10 @@ SCRIPT
 
 chmod +x ~/.claude/config/mcp_setup.sh
 
-# 8. 便利なエイリアスの設定
-echo "🔧 Setting up aliases..."
-cat >> ~/.bashrc << 'ALIASES'
+# 8. 便利なエイリアスの設定（システム全体で有効化）
+echo "🔧 Setting up system-wide aliases..."
+sudo bash -c "cat > /etc/profile.d/claude_aliases.sh" << 'ALIASES'
+#!/bin/bash
 
 # Claude Code aliases
 alias cc='claude'
