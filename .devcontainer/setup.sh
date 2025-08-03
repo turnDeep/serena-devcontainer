@@ -2,65 +2,126 @@
 
 set -e
 
-echo "Setting up Claude Code + Serena MCP environment..."
+echo "================================================"
+echo "Setting up Claude Code + Serena MCP + Brave Search"
+echo "================================================"
 
 # 1. uvのインストール
-echo "Installing uv..."
+echo "📦 Installing uv package manager..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source $HOME/.cargo/env
 
-# 2. Claude Code CLIのインストール（手動で必要）
-echo "======================================="
-echo "Claude Code CLI installation:"
-echo "Please install Claude Code CLI manually by:"
-echo "1. Visit: https://github.com/anthropics/claude-code"
-echo "2. Follow the installation instructions for your system"
-echo "======================================="
+# 2. gitの設定
+echo "🔧 Configuring git..."
+git config --global core.autocrlf input
+git config --global init.defaultBranch main
 
-# 3. 基本的なPythonツールのインストール
-echo "Installing Python tools..."
-pip install --upgrade pip
-
-# 4. Serena設定ディレクトリの準備
-echo "Preparing Serena configuration..."
+# 3. Serena設定ディレクトリの準備
+echo "📁 Preparing Serena configuration..."
 mkdir -p ~/.serena
 
-# 5. 基本的な設定ファイルの作成（オプション）
+# 4. 基本的なSerena設定ファイルの作成
 if [ ! -f ~/.serena/serena_config.yml ]; then
   cat > ~/.serena/serena_config.yml << 'EOF'
 # Serena Configuration
-# This file will be auto-updated when you first run Serena
-
-# Dashboard settings
 dashboard:
   enabled: true
   open_browser: false  # Dev containerなのでブラウザは開かない
   port: 24282
 
-# Logging
 logging:
   level: INFO
   
-# Tool settings
 tools:
   execute_shell_command:
     enabled: true
     require_approval: true  # 安全のため承認を必要とする
+
+# プロジェクトのデフォルト設定
+default_project:
+  read_only: false
+  auto_index: true
 EOF
-  echo "Created basic Serena config at ~/.serena/serena_config.yml"
+  echo "✅ Created Serena config"
 fi
 
-# 6. gitの設定（Windowsホストの場合）
-git config --global core.autocrlf input
+# 5. Claude設定ディレクトリの準備
+echo "📁 Preparing Claude configuration..."
+mkdir -p ~/.claude/config
 
-echo "======================================="
-echo "Setup completed!"
+# 6. MCPサーバー設定ファイルの作成
+cat > ~/.claude/config/mcp_setup.sh << 'SCRIPT'
+#!/bin/bash
+# MCPサーバーを設定するスクリプト
+
+echo "🚀 Setting up MCP servers..."
+
+# Serena MCPを追加
+echo "Adding Serena MCP..."
+claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)
+
+# Brave Search MCPを追加（APIキーが設定されている場合のみ）
+if [ ! -z "$BRAVE_API_KEY" ]; then
+  echo "Adding Brave Search MCP..."
+  claude mcp add brave-search -- npx -y @modelcontextprotocol/server-brave-search
+  echo "✅ Brave Search MCP added"
+else
+  echo "⚠️  BRAVE_API_KEY not set. Skipping Brave Search MCP."
+  echo "   To enable web search, set BRAVE_API_KEY environment variable."
+fi
+
+echo "✅ MCP servers setup complete!"
 echo ""
-echo "Next steps:"
-echo "1. Install Claude Code CLI manually if not already installed"
-echo "2. Run the following command in your project directory:"
-echo "   claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project \$(pwd)"
-echo "3. Start using Claude Code with: claude"
+echo "Run 'claude' to start Claude Code"
+SCRIPT
+
+chmod +x ~/.claude/config/mcp_setup.sh
+
+# 7. 便利なエイリアスの設定
+echo "🔧 Setting up aliases..."
+cat >> ~/.bashrc << 'ALIASES'
+
+# Claude Code aliases
+alias cc='claude'
+alias cc-setup='~/.claude/config/mcp_setup.sh'
+alias cc-status='claude mcp list'
+
+# Serena dashboard
+alias serena-dashboard='echo "Serena Dashboard: http://localhost:24282/dashboard/index.html"'
+
+# Project helpers
+alias project-index='uvx --from git+https://github.com/oraios/serena index-project'
+ALIASES
+
+# 8. 完了メッセージ
 echo ""
-echo "Serena dashboard will be available at: http://localhost:24282/dashboard/index.html"
-echo "======================================="
+echo "================================================"
+echo "✅ Setup completed!"
+echo "================================================"
+echo ""
+echo "📋 Next steps:"
+echo ""
+echo "1. Install Claude Code CLI (if not installed):"
+echo "   Visit: https://github.com/anthropics/claude-code"
+echo ""
+echo "2. Set up Brave Search API key (optional):"
+echo "   - Get API key from: https://brave.com/search/api/"
+echo "   - Set in .env file or export BRAVE_API_KEY='your-key'"
+echo ""
+echo "3. Configure MCP servers:"
+echo "   Run: cc-setup"
+echo ""
+echo "4. Start Claude Code:"
+echo "   Run: claude"
+echo ""
+echo "5. In Claude, load Serena instructions:"
+echo "   Type: /mcp__serena__initial_instructions"
+echo ""
+echo "📦 Available commands:"
+echo "   cc          - Start Claude Code"
+echo "   cc-setup    - Configure MCP servers"
+echo "   cc-status   - Check MCP server status"
+echo ""
+echo "🌐 Serena Dashboard:"
+echo "   http://localhost:24282/dashboard/index.html"
+echo "================================================"
