@@ -9,7 +9,6 @@ echo "================================================"
 # 1. uvのインストール
 echo "📦 Installing uv package manager..."
 curl -LsSf https://astral.sh/uv/install.sh | sh
-source $HOME/.cargo/env
 
 # 2. Claude Code CLIのインストール
 echo "📦 Installing Claude Code CLI via npm..."
